@@ -1,0 +1,92 @@
+MANAGE DATABASES
+----------------
+
+List of databases:
+
+	DESCRIBE keyspaces;
+
+Detailed list of databases
+
+	SELECT * FROM system_schema.keyspaces;
+
+Create database rebar suitable for development:
+
+	CREATE KEYSPACE rebar
+	WITH replication = {
+	  'class':'SimpleStrategy',
+	  'replication_factor' : 1
+	};
+
+Switch to database rebar:
+
+	USE rebar;
+	
+List of tables:
+
+	DESCRIBE tables;
+
+List of columns in a table User in database rebar:
+
+	SELECT * FROM system.schema_columns
+	WHERE keyspace_name = 'rebar'
+	AND columnfamily_name = 'User';
+	
+MANAGE TABLES
+-------------
+	
+Create a table:
+
+	CREATE TABLE User(
+	  id uuid PRIMARY KEY,
+	  username varchar,
+	  password varchar,
+	  displayname varchar,
+	  email varchar,
+	);
+	
+Create an index on a column:
+
+	CREATE INDEX User_username_ix
+	ON User( username );
+	
+List details for table rebar:
+
+	DESCRIBE TABLE rebar;
+	
+MANAGE DATA
+-----------
+	
+Insert a record into a table with auto-generated UUID:
+
+	insert into User( id, username, password, displayName, email )
+	values( uuid(), 'jack', 'secret', 'Jack', 'jack@example.com' );
+	Insert a record into a table with given UUID:
+
+	insert into User( id,
+	  username, password, displayName, email
+	)
+	values( d362e1df-1fa8-466b-b311-af90b2a71e8e,
+	  'jack', 'secret', 'Jack Myuser', 'jack@example.com'
+	);
+
+DATA TYPES
+----------
+
+Type	Description
+ascii	ASCII character string
+bigint	8-byte long
+blob	Arbitrary bytes (no validation)
+boolean	true or false
+counter	Counter column (8-byte long)
+decimal	Variable-precision decimal
+double	8-byte floating point
+float	4-byte floating point
+int	4-byte integer
+text	UTF8 encoded string
+timestamp	Date plus time, encoded as 8 bytes since epoch
+uuid	Type 1, or type 4 UUID
+varchar	UTF8 encoded string
+varint	Arbitrary-precision integer
+
+
+

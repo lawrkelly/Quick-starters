@@ -1,0 +1,57 @@
+START HERE ---    https://dzone.com/articles/hdfs-cheat-sheet
+
+AND  HERE   ---    https://community.hortonworks.com/articles/26518/hadoop-cluster-maintenance.html
+
+HDFS uses mostly linux type O/S commands making it easy to support, with some differences...
+
+##  Older version of Hadoop uses ;  $hadoop fs
+
+hdfs dfs -help    ##  Place to start for help
+
+Since you are logged in as the hdfs super user, you can also use the HDFS Admin commands.
+
+hdfs dfsadmin
+
+https://wiki.apache.org/hadoop/GettingStartedWithHadoop#Configuration_files
+
+% $HADOOP_INSTALL/hadoop/bin/hadoop namenode -format
+
+Since you are logged in as the hdfs super user, you can also use the HDFS Admin commands.
+
+
+
+hdfs dfs -appendToFile localfile /user/hadoop/hadoopfile
+hdfs dfs -appendToFile localfile1 localfile2 /user/hadoop/hadoopfile
+hdfs dfs -appendToFile localfile hdfs://nn.example.com/hadoop/hadoopfile
+hdfs dfs -appendToFile - hdfs://nn.example.com/hadoop/hadoopfile              ## Reads the input from stdin.
+
+Returns 0 on success and 1 on error.
+
+hdfs dfs -cat hdfs://nn1.example.com/file1 hdfs://nn2.example.com/file2
+hdfs dfs -cat file:///file3 /user/hadoop/file4
+
+Returns 0 on success and -1 on error.
+
+hdfs dfs -getmerge -nl /test1 file1.txt				##  Concatenate all the files in a directory into a single file
+
+hdfs dfs -rm -R -f -skipTrash /dir/*.orc			##   Delete all the ORC files forever, skipping the temporary trash holding.
+
+hdfs dfs -moveFromLocal /tmp/tmp2 /tmp2				##   Move A Directory From Local To HDFS and Delete Local
+
+Usage: hdfs dfs -chgrp [-R] GROUP URI [URI ...]
+
+Usage: hdfs dfs -chmod [-R] <MODE[,MODE]... | OCTALMODE> URI [URI ...]
+
+# enumerate all files in the object store's container.
+hadoop fs -find s3a://bucket/ -print
+
+# remember to escape the wildcards to stop the shell trying to expand them first
+hadoop fs -find s3a://bucket/datasets/ -name \*.txt -print
+
+*************** Most hdfs dfs USE standard Linux command or similar. ********************
+
+https://github.com/blrunner/yarn-beginners-examples
+
+$ bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/output
+
+

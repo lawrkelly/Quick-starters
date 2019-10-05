@@ -1,0 +1,115 @@
+https://docs.mongodb.com/manual/reference/mongo-shell/
+
+mongodump --oplog --port 27017 --out /opt/backup/mongodump-`date`
+
+mongostat --username=user --password=xxx  --authenticationDatabase=admin
+
+mongoimport -d sample -c tweets twitter.json  ***
+
+mongorestore --port 27017 /opt/backup/mongodump-2017-02-28
+
+The query optimizer can be overridden using the cursor.hint() method.
+
+As with a relational database, the DBA can review query plans and ensure common 
+queries are serviced by well-de ned indexes by using the explain() function
+
+--oplog
+Creates a file named oplog.bson as part of the mongodump output.
+The oplog.bson file, located in the top level of the output directory,
+contains oplog entries that occur during the mongodump operation.
+This file provides an effective point-in-time snapshot of the state of
+a mongod instance. To restore to a specific point-in-time backup,
+use the output created with this option in conjunction
+with mongorestore --oplogReplay.
+
+Without --oplog, if there are write operations during the dump operation,
+the dump will not reflect a single moment in time. Changes made to the
+database during the update process can affect the output of the backup.
+
+mongod --port 27017 --dbpath=/usr/local/var/mongodb --replSet rs0 &
+
+rs.conf()
+{
+    "_id" : "rs0",
+    "version" : 1,
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "localhost:27017"
+        }
+    ]
+}
+
+rs.initiate({_id:"rs0", members: [{"_id":1, "host":"127.0.0.1:27017"}]})
+
+To enable oplog on a standalone server, start mongo with master options.
+
+On command line start mongod --master.
+
+For conf file append the following line:
+
+master=true
+
+mongodump --oplog --port 27017 --out /opt/backup/mongodump-`date`
+
+With a mac you can do this by typing sudo scutil –-set HostName localhost.
+
+mongod --port 27018 --config /usr/local/etc/mongod2.conf --dbpath=/usr/local/var/mongodb2 --replSet rs0 &
+
+mongod --port 27017 --config /usr/local/etc/mongod.conf --dbpath=/data/db --replSet rs0 &
+
+mongod --port 27019 --config /usr/local/etc/mongod3.conf --dbpath=/usr/local/var/mongodb3 --replSet rs0 &
+
+rs.add("127.0.0.1:27018")
+rs.add("127.0.0.1:27019")
+
+rs.slaveOk()
+
+mongorestore --oplogReplay
+
+mongorestore --port 27017 /opt/backup/mongodump-2017-02-28
+
+db.getCollection('system.users').find({})
+db.serverStatus()
+db.setProfilingLevel(1, 1000)
+
+mongo -u user -p xxxx --authenticationDatabase admin
+
+db.collection.dropIndex()
+
+rs.initiate( {
+   _id : "rs0",
+   members: [ { _id : 0, host : "ip-10-10-10-100:27017" } ]
+})
+
+rs.add("")
+rs.add("mongodb2.example.net")
+
+
+MongoDB Enterprise > db.system.replset.find({})
+MongoDB Enterprise > db.system.replset.remove({},{rs0:true})
+
+mongo -u lawrence -p xxx --authenticationDatabase admin
+
+db.getCollection('coll').find({account_id:96,
+resource_state:'pending', time_stamp:{$gte:'2017-02-01',
+$lte:'2017-02-28'}, is_test_cc: {$nin: ["1", 1]}, order_status: {$nin: ["7", 7]}})
+
+LOCAL COPY
+mongod --port 27018 --config /usr/local/etc/mongod2.conf --dbpath=/usr/local/var/mongodb2 --replSet rs0
+mongod --port 27017 --config /usr/local/etc/mongod.conf --dbpath=/data/db --replSet rs0
+mongod --port 27019 --config /usr/local/etc/mongod3.conf --dbpath=/usr/local/var/mongodb3 --replSet rs0
+opslog   /usr/local/bin/mongooplog
+
+db.getCollection("oplog.rs").find({})
+use local
+db.oplog.rs.find()
+
+replication: replSetName: rs0 oplogSizeMB: 100
+
+On command line start mongod --master.
+For conf file append the following line:
+master=true
+
+
+

@@ -1,0 +1,33 @@
+First step is to create mysql account, use this account for the installation always
+
+Second step is to get a reasonable configuration file
+
+https://tools.percona.com/
+
+create your MySQL configuration
+
+Then create a percona account
+
+Here you can specify the server details, and percona can store the my.cnf file	
+
+Install the MySQL binaries as  standard linux install
+
+yum install MySQL or rpm -i MySQL
+
+Once the software installs, create a database using this command
+
+mysql_install_db --no-defaults --datadir=/data/db_name
+
+This will default to port number 3306, you can set the port and other details when you install
+
+Copy the generated my.cnf to the /etc/my.cnf directory
+
+Start the database 
+
+mysqld_safe --datadir='/data/db_name' 
+
+Now you can login as root, as it has no password....
+
+mysql -uroot
+
+mysqladmin --port=3306 --user=root password 'somenewpassword'

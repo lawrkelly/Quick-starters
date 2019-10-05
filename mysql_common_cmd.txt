@@ -1,0 +1,144 @@
+####  COMMON AND USEFULE COMMANDS
+####  simply search for common tasks, ie startup
+####  shutdown and find how to do that with
+####  confidence
+
+
+select distinct table_name, table_rows
+from information_schema.tables where table_name like 'table_name'
+
+SET SQL_LOG_BIN=0;   -- turn off binary log; useful for big loads etc.
+
+mysqld_multi stop 2   --  for multiple installations
+
+SET @@default_master_connection='snap';  master connection name
+
+SET global MAX_ALLOWED_PACKET = 1073741824;
+
+show variables like 'max_allowed_packet';
+
+SET global MAX_ALLOWED_PACKET = 1073741824;
+
+SET slave_max_allowed_packet = 1073741824;
+
+start slave;
+
+start all slaves;  -- for multiple installations
+
+STOP SLAVE; SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1; START SLAVE;  --  skip slave transactions
+
+swapoff -a && swapon -a  -- used for Linux swap
+
+SET GLOBAL slow_query_log = 'ON';  
+
+mysql mysql -e "select * from user"  --  how to run a script; this checks the users
+ 
+mysqlbinlog XXXXFILE --base64-output=decode-rows -v  -- convert a bin log to text
+ 
+purge binary logs to 'mysql-bin.001330';
+ 
+mysql --socket=$/home/mysql/mysqld5.sock -e'stop all slaves;flush logs;flush tables;show all slaves status\G'
+ 
+tar -zcvf - /data/mysqld5 | pigz -9 > /data/mysqld5/mysqld5.gz
+ 
+rsync -avz  /data/mysqld5/mysqld5.gz  /data/mysqld3
+ 
+SET tx_isolation = 'READ-COMMITTED';
+ 
+SET GLOBAL log_output='FILE';
+ 
+SET GLOBAL general_log=OFF;
+
+alter table mysql.general_log add index ev_tm_idx(`event_time`);
+
+show create table mysql.general_log\G
+
+CREATE TABLE `general_log` (
+  `event_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_host` mediumtext NOT NULL,
+  `thread_id` bigint(21) unsigned NOT NULL,
+  `server_id` int(10) unsigned NOT NULL,
+  `command_type` varchar(64) NOT NULL,
+  `argument` mediumtext NOT NULL,
+  KEY `ev_tm_idx` (`event_time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='General log'
+
+SET GLOBAL general_log=ON;
+
+
+ 
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, 
+SHOW VIEW ON *.* TO 'prod_appl_user'@'ip.%' 
+IDENTIFIED BY PASSWORD 'password'
+ 
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, 
+LOCK TABLES, EXECUTE, SHOW VIEW ON *.* TO 'prod_appl_user'@'ip.%' 
+IDENTIFIED BY PASSWORD 'password'
+ 
+ CHANGE MASTER TO MASTER_HOST = 'master', MASTER_USER = 'repl_user', MASTER_PASSWORD = 'repl_user',
+ MASTER_PORT=3306, MASTER_LOG_FILE = 'mysql-bin.002448', MASTER_LOG_POS = 248; 
+  
+ CHANGE MASTER TO MASTER_HOST = 'master', MASTER_USER = 'repl_user', MASTER_PASSWORD = 'repl_user',
+ MASTER_PORT=3306, MASTER_LOG_FILE = 'mysql-bin.004975', MASTER_LOG_POS = 004;
+  
+ CHANGE MASTER TO MASTER_HOST = '127.0.0.1', MASTER_USER = 'repl_user', MASTER_PASSWORD = 'repl_user',
+ MASTER_PORT=3311, MASTER_LOG_FILE = 'mysqld-bin.000059', MASTER_LOG_POS = 279711486;
+  
+  
+slave start; 
+
+CHANGE MASTER TO MASTER_HOST='master',MASTER_USER='repl_user', MASTER_PORT=3306, 
+MASTER_PASSWORD='repl_user', MASTER_LOG_FILE='mysql-bin.004919', MASTER_LOG_POS=  767;
+ 
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'10.%' IDENTIFIED BY 'repl_user';
+
+innobackupex -port 3307 --use-memory=4G --apply-log /data/mysqld1/db1
+
+nohup innobackupex --defaults-file=/etc/my.cnf --user=root --password=pw --slave-info --parallel=4 /data/mysqld1 --defaults-group=mysqld1 --port=3306 --socket=/home/mysql/mysqld1.sock &
+ 
+       
+/usr/bin/mysqladmin -u root password 'new-password'
+/usr/bin/mysqladmin -u root -h hostname password 'new-password' 
+
+innodb_log_file_size=268435456
+
+
+
+backup
+------
+
+mysqldump --master-data=2 --single-transaction --routines --triggers --all-databases > 01_19_full_dump.sql
+
+mysqldump --master-data=2 --single-transaction --routines --triggers --all-databases > 01_19_full_dump.sql
+
+nohup innobackupex --user=lawrence --password=password --stream=tar ./ | gzip -c -1 > /data/backup/hot_backup_01_19.tar.gz 2>/data/backup/hot_backup_01_19.log
+
+set global log_queries_not_using_indexes=1; 
+
+sudo nohup innobackupex --user=lawrence --password=foo --slave-info /data/backup/.
+
+1 innobackupex --apply-log 
+
+2 sudo innobackupex --defaults-file=/etc/my.cnf --copy-back /data/2017-01-20_01-59-37
+
+3 CHANGE MASTER TO MASTER_LOG_FILE='binlog.000017', MASTER_LOG_POS=822193
+
+4 CHANGE MASTER TO MASTER_HOST='10.1.100.1',
+  MASTER_USER='slave_rep', 
+  MASTER_PASSWORD='foo', 
+  MASTER_LOG_FILE='binlog.000084', 
+  MASTER_LOG_POS=  602580293;
+
+sudmysqld_safe --defaults-file=/etc/mysql2/my.cnf &
+
+vi xtrabackup_slave_info
+
+select * from mysql.user where user = 'slave'\G;
+
+Repl_slave_priv: N
+
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'%' IDENTIFIED BY 'foo';
+
+“Ctrl-A” and “d“
+
+screen -ls
